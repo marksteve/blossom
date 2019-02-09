@@ -12,3 +12,6 @@ vendor/
 
 # Output of the go coverage tool
 *.out
+
+# Secrets
+.env
