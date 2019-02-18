@@ -16,8 +16,20 @@ type DiscoveryMetrics struct {
 // GetDiscoveryMetrics returns all metrics for a particular repository.
 func GetDiscoveryMetrics(r *github.Repository) DiscoveryMetrics {
 	return DiscoveryMetrics{
-		stars:    r.GetStargazersCount(),
-		forks:    r.GetForksCount(),
-		watchers: r.GetWatchersCount(),
+		stars:    getStargazers(r),
+		forks:    getForks(r),
+		watchers: getWatchers(r),
 	}
+}
+
+func getStargazers(r *github.Repository) int {
+	return r.GetStargazersCount()
+}
+
+func getForks(r *github.Repository) int {
+	return r.GetForksCount()
+}
+
+func getWatchers(r *github.Repository) int {
+	return r.GetWatchersCount()
 }
