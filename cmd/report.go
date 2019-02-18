@@ -12,20 +12,11 @@ import (
 
 // reportCmd represents the report command
 var reportCmd = &cobra.Command{
-	Use:   "report",
+	Use:   "report <username>/<repository>",
 	Short: "Get open-source software metrics in stdout",
 	Long: `The report command is the main entrypoint for obtaining
-open-source software metrics related to your project. To use this,
-simply run:
-
-$ blossom report <username>/<project>
-
-If you wish to get metrics for a particular area (discovery, activity,
-etc.), you can pass a flag:
-
-# Gives all metrics in terms of project discovery 
-
-$ blossom report <username>/<project> --discovery`,
+open-source software metrics related to your project. You can pass several
+flags to check various aspects of the project`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		target := args[0]
