@@ -7,6 +7,7 @@ import (
 
 	"github.com/ljvmiranda921/blossom/pkg/auth"
 	"github.com/ljvmiranda921/blossom/pkg/metrics"
+	"github.com/shurcooL/githubv4"
 	"github.com/spf13/cobra"
 )
 
@@ -24,15 +25,20 @@ flags to check various aspects of the project`,
 
 		// Check if user, repo has been captured
 		if len(targetSlice) != 2 {
-			log.Fatal("Ensure that target is: <username>/<repository>")
+			log.Fatal("Ensure that target is: <owner>/<repository>")
 		}
 
 		ctx := context.Background()
 		client := auth.GetClient(ctx)
 
-		repo, _, _ := client.Repositories.Get(ctx, targetSlice[0], targetSlice[1])
-		dm := metrics.GetDiscoveryMetrics(repo)
-		log.Print(dm)
+		request := map[string]interface{}{
+			"owner": githubv4.String(targetSlice[0]),
+			"name":  githubv4.String(targetSlice[1]),
+		}
+
+		dm := metrics.GetDiscoveryMetrics(ctx, client, request)
+		log.Println(dm)
+
 	},
 }
 

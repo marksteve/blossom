@@ -1,7 +1,10 @@
 package metrics
 
 import (
-	"github.com/google/go-github/github"
+	"context"
+	"log"
+
+	"github.com/shurcooL/githubv4"
 )
 
 // DiscoveryMetrics measures how well the project is being noticed.  Although
@@ -13,23 +16,28 @@ type DiscoveryMetrics struct {
 	watchers int
 }
 
+var q struct {
+	Repository struct {
+		ForkCount  int
+		Stargazers struct {
+			TotalCount int
+		}
+		Watchers struct {
+			TotalCount int
+		}
+	} `graphql:"repository(owner: $owner, name: $name)"`
+}
+
 // GetDiscoveryMetrics returns all metrics for a particular repository.
-func GetDiscoveryMetrics(r *github.Repository) DiscoveryMetrics {
-	return DiscoveryMetrics{
-		stars:    getStargazers(r),
-		forks:    getForks(r),
-		watchers: getWatchers(r),
+func GetDiscoveryMetrics(ctx context.Context, client *githubv4.Client, request map[string]interface{}) DiscoveryMetrics {
+
+	err := client.Query(ctx, &q, request)
+	if err != nil {
+		log.Panic(err)
 	}
-}
-
-func getStargazers(r *github.Repository) int {
-	return r.GetStargazersCount()
-}
-
-func getForks(r *github.Repository) int {
-	return r.GetForksCount()
-}
-
-func getWatchers(r *github.Repository) int {
-	return r.GetWatchersCount()
+	return DiscoveryMetrics{
+		stars:    q.Repository.Stargazers.TotalCount,
+		forks:    q.Repository.ForkCount,
+		watchers: q.Repository.Watchers.TotalCount,
+	}
 }

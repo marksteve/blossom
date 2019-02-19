@@ -5,13 +5,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/google/go-github/github"
 	"github.com/joho/godotenv"
+	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
 )
 
-// GetClient returns a github.Client from an environmental variable
-func GetClient(ctx context.Context) *github.Client {
+// GetClient returns a githubv4.Client from an environmental variable
+func GetClient(ctx context.Context) *githubv4.Client {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -22,6 +22,6 @@ func GetClient(ctx context.Context) *github.Client {
 		&oauth2.Token{AccessToken: githubToken},
 	)
 	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
+	client := githubv4.NewClient(tc)
 	return client
 }
