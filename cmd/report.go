@@ -22,6 +22,11 @@ flags to check various aspects of the project`,
 		target := args[0]
 		targetSlice := strings.Split(target, "/")
 
+		// Check if user, repo has been captured
+		if len(targetSlice) != 2 {
+			log.Fatal("Ensure that target is: <username>/<repository>")
+		}
+
 		ctx := context.Background()
 		client := auth.GetClient(ctx)
 
