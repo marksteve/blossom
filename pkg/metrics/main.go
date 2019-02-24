@@ -1,14 +1,18 @@
 package metrics
 
 import (
+	"context"
+	"log"
 	"time"
 
-	"github.com/google/go-github/github"
+	"github.com/shurcooL/githubv4"
 )
 
-// ActivityMetrics measures contributor and maintainer activity throughout the
-// project. Most of these metrics were adopted from github.com/chaoss/metrics
-type ActivityMetrics struct {
+// Metrics contain all open-source related metrics.
+type Metrics struct {
+	stars                     int           // No. of stars in repository
+	forks                     int           // No. of forks in repository
+	watchers                  int           // No. of watchers in repository
 	avgIssueResponseTime      time.Duration // Avg. duration for first response in an issue
 	avgOpenIssueTime          time.Duration // Avg. duration for issues to remain open
 	avgIssueResolutionTime    time.Duration // Avg. time it takes for issues to be closed
@@ -33,18 +37,17 @@ type ActivityMetrics struct {
 	updateAge                 time.Duration // Time since last update
 }
 
-// GetActivityMetrics returns a set of activity metrics for a particular repository
-func GetActivityMetrics(r *github.Repository) ActivityMetrics {
-	return ActivityMetrics{
-		communityAge: getCommunityAge(r),
-		updateAge:    getUpdateAge(r),
+// Get obtains all Metrics.
+func Get(ctx context.Context, client *githubv4.Client, request map[string]interface{}) Metrics {
+
+	err := client.Query(ctx, &q, request)
+	if err != nil {
+		log.Panic(err)
 	}
-}
 
-func getCommunityAge(r *github.Repository) time.Duration {
-	return time.Since(r.GetCreatedAt().Time)
-}
-
-func getUpdateAge(r *github.Repository) time.Duration {
-	return time.Since(r.GetUpdatedAt().Time)
+	return Metrics{
+		stars:    q.Repository.Stargazers.TotalCount,
+		forks:    q.Repository.ForkCount,
+		watchers: q.Repository.Watchers.TotalCount,
+	}
 }
