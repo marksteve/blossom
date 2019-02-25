@@ -37,15 +37,23 @@ type Metrics struct {
 	updateAge                 time.Duration // Time since last update
 }
 
+// ResourceStats indicates the remaining rate limit and the query cost
+type ResourceStats struct {
+	rateLimit int // Maximum rate limit
+	cost      int // Query cost
+	remaining int // Remaining API calls at the current time
+
+}
+
 // Get returns a Metrics structure.
-func Get(ctx context.Context, client *githubv4.Client, request map[string]interface{}) Metrics {
+func Get(ctx context.Context, client *githubv4.Client, request map[string]interface{}) (Metrics, ResourceStats) {
 
 	err := client.Query(ctx, &q, request)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	return Metrics{
+	metrics := Metrics{
 		stars:                  q.Repository.Stargazers.TotalCount,
 		forks:                  q.Repository.ForkCount,
 		watchers:               q.Repository.Watchers.TotalCount,
@@ -58,6 +66,14 @@ func Get(ctx context.Context, client *githubv4.Client, request map[string]interf
 		prOpen:                 q.Repository.OpenPRs.TotalCount,
 		updateAge:              time.Since(q.Repository.UpdatedAt),
 	}
+
+	resourceStats := ResourceStats{
+		rateLimit: q.RateLimit.Limit,
+		cost:      q.RateLimit.Cost,
+		remaining: q.RateLimit.Remaining,
+	}
+
+	return metrics, resourceStats
 }
 
 // getPRMadeClosed is a helper function to obtain the prMadeClosed metric

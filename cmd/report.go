@@ -36,8 +36,9 @@ flags to check various aspects of the project`,
 			"name":  githubv4.String(targetSlice[1]),
 		}
 
-		dm := metrics.Get(ctx, client, request)
-		log.Println(dm)
+		m, rl := metrics.Get(ctx, client, request)
+		log.Println(m)
+		log.Println(rl)
 
 	},
 }
