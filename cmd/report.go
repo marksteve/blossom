@@ -23,17 +23,19 @@ flags to check various aspects of the project`,
 		target := args[0]
 		targetSlice := strings.Split(target, "/")
 
-		// Check if user, repo has been captured
+		// Check if owner, repo has been captured
 		if len(targetSlice) != 2 {
 			log.Fatal("Ensure that target is: <owner>/<repository>")
 		}
+
+		owner, repo := targetSlice[0], targetSlice[1]
 
 		ctx := context.Background()
 		client := auth.GetClient(ctx)
 
 		request := map[string]interface{}{
-			"owner": githubv4.String(targetSlice[0]),
-			"name":  githubv4.String(targetSlice[1]),
+			"owner": githubv4.String(owner),
+			"name":  githubv4.String(repo),
 		}
 
 		m, rl := metrics.Get(ctx, client, request)
