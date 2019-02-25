@@ -10,38 +10,38 @@ import (
 
 // Metrics contain all open-source related metrics.
 type Metrics struct {
-	stars                     int           // No. of stars in repository
-	forks                     int           // No. of forks in repository
-	watchers                  int           // No. of watchers in repository
-	avgIssueResponseTime      time.Duration // Avg. duration for first response in an issue
-	avgOpenIssueTime          time.Duration // Avg. duration for issues to remain open
-	avgIssueResolutionTime    time.Duration // Avg. time it takes for issues to be closed
-	avgPRComments             float64       // No. of comments per pull request
-	busFactor                 int           // No. of developers to destroy progress
-	closedIssues              int           // No. of closed issues
-	codeCommits               int           // No. of commits
-	codeMergeDuration         time.Duration // Duration between PR and merge
-	codeReviewEfficiency      float64       // Number of merged PR / closed PRs
-	communityAge              time.Duration // Duration since repo was first released
-	contributionAcceptance    float64       // Ratio of merged PR / total PRs
-	contributors              int           // No. of contributors
-	issueComments             float64       // No. of comments per issue
-	issueResolutionEfficiency float64       // No. of closed issues / abandoned issues
-	newContributions          float64       // Percent of contributions from first-timers / accepted contributions over time
-	ponyFactor                float64       // Min. number of developers performing 50% of the commits
-	prCommentDuration         time.Duration // Duration between PR creation and recent comment
-	prMadeClosed              float64       // No. of closed PRs / total PRs
-	prOpen                    int           // No. of open PRs
-	releaseVelocity           time.Duration // Avg. time between releases
-	sizeCodeBase              int           // Lines of code
-	updateAge                 time.Duration // Time since last update
+	Stars                     int           // No. of stars in repository
+	Forks                     int           // No. of forks in repository
+	Watchers                  int           // No. of watchers in repository
+	AvgIssueResponseTime      time.Duration // Avg. duration for first response in an issue
+	AvgOpenIssueTime          time.Duration // Avg. duration for issues to remain open
+	AvgIssueResolutionTime    time.Duration // Avg. time it takes for issues to be closed
+	AvgPRComments             float64       // No. of comments per pull request
+	BusFactor                 int           // No. of developers to destroy progress
+	ClosedIssues              int           // No. of closed issues
+	CodeCommits               int           // No. of commits
+	CodeMergeDuration         time.Duration // Duration between PR and merge
+	CodeReviewEfficiency      float64       // Number of merged PR / closed PRs
+	CommunityAge              time.Duration // Duration since repo was first released
+	ContributionAcceptance    float64       // Ratio of merged PR / total PRs
+	Contributors              int           // No. of contributors
+	IssueComments             float64       // No. of comments per issue
+	IssueResolutionEfficiency float64       // No. of closed issues / abandoned issues
+	NewContributions          float64       // Percent of contributions from first-timers / accepted contributions over time
+	PonyFactor                float64       // Min. number of developers performing 50% of the commits
+	PRCommentDuration         time.Duration // Duration between PR creation and recent comment
+	PRMadeClosed              float64       // No. of closed PRs / total PRs
+	PROpen                    int           // No. of open PRs
+	ReleaseVelocity           time.Duration // Avg. time between releases
+	SizeCodeBase              int           // Lines of code
+	UpdateAge                 time.Duration // Time since last update
 }
 
 // ResourceStats indicates the remaining rate limit and the query cost
 type ResourceStats struct {
-	rateLimit int // Maximum rate limit
-	cost      int // Query cost
-	remaining int // Remaining API calls at the current time
+	RateLimit int // Maximum rate limit
+	Cost      int // Query cost
+	Remaining int // Remaining API calls at the current time
 
 }
 
@@ -54,23 +54,23 @@ func Get(ctx context.Context, client *githubv4.Client, request map[string]interf
 	}
 
 	metrics := Metrics{
-		stars:                  q.Repository.Stargazers.TotalCount,
-		forks:                  q.Repository.ForkCount,
-		watchers:               q.Repository.Watchers.TotalCount,
-		closedIssues:           q.Repository.ClosedIssues.TotalCount,
-		codeCommits:            q.Repository.CommitCount.Target.Commit.History.TotalCount,
-		codeReviewEfficiency:   getCodeReviewEfficiency(),
-		prMadeClosed:           getPRMadeClosed(),
-		communityAge:           time.Since(q.Repository.CreatedAt),
-		contributionAcceptance: getContributionAcceptance(),
-		prOpen:                 q.Repository.OpenPRs.TotalCount,
-		updateAge:              time.Since(q.Repository.UpdatedAt),
+		Stars:                  q.Repository.Stargazers.TotalCount,
+		Forks:                  q.Repository.ForkCount,
+		Watchers:               q.Repository.Watchers.TotalCount,
+		ClosedIssues:           q.Repository.ClosedIssues.TotalCount,
+		CodeCommits:            q.Repository.CommitCount.Target.Commit.History.TotalCount,
+		CodeReviewEfficiency:   getCodeReviewEfficiency(),
+		PRMadeClosed:           getPRMadeClosed(),
+		CommunityAge:           time.Since(q.Repository.CreatedAt),
+		ContributionAcceptance: getContributionAcceptance(),
+		PROpen:                 q.Repository.OpenPRs.TotalCount,
+		UpdateAge:              time.Since(q.Repository.UpdatedAt),
 	}
 
 	resourceStats := ResourceStats{
-		rateLimit: q.RateLimit.Limit,
-		cost:      q.RateLimit.Cost,
-		remaining: q.RateLimit.Remaining,
+		RateLimit: q.RateLimit.Limit,
+		Cost:      q.RateLimit.Cost,
+		Remaining: q.RateLimit.Remaining,
 	}
 
 	return metrics, resourceStats
