@@ -37,7 +37,7 @@ type Metrics struct {
 	updateAge                 time.Duration // Time since last update
 }
 
-// Get obtains all Metrics.
+// Get returns a Metrics structure.
 func Get(ctx context.Context, client *githubv4.Client, request map[string]interface{}) Metrics {
 
 	err := client.Query(ctx, &q, request)
@@ -46,8 +46,31 @@ func Get(ctx context.Context, client *githubv4.Client, request map[string]interf
 	}
 
 	return Metrics{
-		stars:    q.Repository.Stargazers.TotalCount,
-		forks:    q.Repository.ForkCount,
-		watchers: q.Repository.Watchers.TotalCount,
+		stars:                  q.Repository.Stargazers.TotalCount,
+		forks:                  q.Repository.ForkCount,
+		watchers:               q.Repository.Watchers.TotalCount,
+		closedIssues:           q.Repository.ClosedIssues.TotalCount,
+		codeCommits:            q.Repository.CommitCount.Target.Commit.History.TotalCount,
+		codeReviewEfficiency:   getCodeReviewEfficiency(),
+		prMadeClosed:           getPRMadeClosed(),
+		communityAge:           time.Since(q.Repository.CreatedAt),
+		contributionAcceptance: getContributionAcceptance(),
+		prOpen:                 q.Repository.OpenPRs.TotalCount,
+		updateAge:              time.Since(q.Repository.UpdatedAt),
 	}
+}
+
+// getPRMadeClosed is a helper function to obtain the prMadeClosed metric
+func getPRMadeClosed() float64 {
+	return float64(q.Repository.MergedPRs.TotalCount+q.Repository.ClosedPRs.TotalCount) / float64(q.Repository.PullRequests.TotalCount)
+}
+
+// getCodeReviewEfficiency is a helper function to obtain the codeReviewEfficiency metric
+func getCodeReviewEfficiency() float64 {
+	return float64(q.Repository.MergedPRs.TotalCount) / float64(q.Repository.ClosedPRs.TotalCount)
+}
+
+// getContributionAcceptance is a helper function to obtain the contributionAcceptance metric
+func getContributionAcceptance() float64 {
+	return float64(q.Repository.MergedPRs.TotalCount) / float64(q.Repository.PullRequests.TotalCount)
 }
