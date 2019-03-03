@@ -43,4 +43,52 @@ GITHUB_TOKEN=<your API token here>
 
 All authentication is handled by `pkg/auth`.
 
+### Getting open-source software metrics
 
+Most of the metrics here were based from [CHAOSS's open-source software
+metrics](https://github.com/chaoss/metrics). To obtain them for a particular
+repository, simply run the following command:
+
+```s
+$ blossom report <owner>/<repository>
+```
+
+For example,
+
+```s
+$ blossom report ljvmiranda921/blossom
+```
+
+So far, I am still updating the metrics that we have. If you would like to help
+out, then I'd definitely appreciate it!
+
+## Contributing
+
+Simply fork this repository and [make a Pull
+Request](https://help.github.com/en/articles/creating-a-pull-request)! I'm
+open to any kind of contribution, but I'd definitely appreciate:
+
+- Implementation of some open-source software metrics
+- Proposal for new metrics
+- Documentation
+- Testing
+
+Also, we have a
+[CONTRIBUTING.md](https://github.com/ljvmiranda921/blossom/blob/master/CONTRIBUTING.md)
+and a [Code of
+Conduct](https://github.com/ljvmiranda921/blossom/blob/master/CODE_OF_CONDUCT.md),
+so please check that one out!
+
+## FAQ
+
+- **Why make this if there's already CHAOSS?** The CHAOSS toolset is really
+    good and comprehensive, but I want something that's more lightweight and
+    "atomic." I want to immediately get software metrics without setting up my
+    own webserver etc., so this fits into my use-case.
+- **Can I already use this in my organization?** This is still experimental and
+     not yet production-ready. I also don't know (yet) how this can be
+     deployed. If you've successfully used this in any of your projects then
+     feel free to ping me!
+- **Your Golang skills needs improvement** I know, I'm still learning Go so
+    please bear with me. If there are any code smells, please don't hesitate to
+     make a PR!
