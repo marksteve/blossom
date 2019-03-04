@@ -1,5 +1,7 @@
 # blossom
 
+[![GoDoc](https://godoc.org/github.com/ljvmiranda921/blossom?status.svg)](https://godoc.org/github.com/ljvmiranda921/blossom)
+
 **blossom** is a **b**undle of **l**ightweight **o**pen-**s**ource **so**ftware **m**etrics. 
 It is a tool that enables you to fetch [software metrics](https://opensource.guide/metrics/) 
 from any of your organization's repository in Github.
